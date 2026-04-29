@@ -14,8 +14,9 @@ import {
   validatePasswordStrength,
 } from "@/lib/validation";
 
+/* ===================== TYPES ===================== */
 type UserDto = {
-  id: number;
+  id: string; // 🔥 FIX: dari number → string
   name: string;
   email: string;
   role: UserRole;
@@ -25,7 +26,8 @@ type UserDto = {
 
 const userRoles: UserRole[] = ["admin", "dosen", "mahasiswa"];
 
-function toUserDto(user: StoredUser): UserDto {
+/* ===================== MAPPER ===================== */
+function toUserDto(user: any): UserDto {
   return {
     id: user.id,
     name: user.name,
@@ -36,9 +38,9 @@ function toUserDto(user: StoredUser): UserDto {
   };
 }
 
+/* ===================== AUTH ===================== */
 async function requireAdmin(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-
   if (!token) return null;
 
   const session = await getSessionByToken(token);
@@ -53,13 +55,14 @@ async function requireAdmin(request: NextRequest) {
   return user;
 }
 
+/* ===================== GET USERS ===================== */
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin(request);
 
   if (!admin) {
     return NextResponse.json(
       { success: false, message: "Akses admin diperlukan" },
-      { status: 403 },
+      { status: 403 }
     );
   }
 
@@ -71,63 +74,60 @@ export async function GET(request: NextRequest) {
   });
 }
 
+/* ===================== CREATE / UPDATE USER ===================== */
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin(request);
 
   if (!admin) {
     return NextResponse.json(
       { success: false, message: "Akses admin diperlukan" },
-      { status: 403 },
+      { status: 403 }
     );
   }
 
-  const body = (await request.json()) as {
-    name?: string;
-    email?: string;
-    role?: UserRole;
-    password?: string;
-  };
+  const body = await request.json();
+
   const name = body.name ?? "";
   const email = body.email ?? "";
   const password = body.password ?? "";
-  const role = userRoles.includes(body.role as UserRole)
-    ? (body.role as UserRole)
+
+  const role = userRoles.includes(body.role)
+    ? body.role
     : "mahasiswa";
+
   const existingUser = await findUserByEmail(email);
 
+  /* VALIDASI */
   if (!isValidName(name)) {
     return NextResponse.json(
-      {
-        success: false,
-        message: "Nama harus 3-100 karakter, hanya huruf/spasi/tanda baca",
-      },
-      { status: 400 },
+      { success: false, message: "Nama tidak valid" },
+      { status: 400 }
     );
   }
 
   if (!isValidEmail(email)) {
     return NextResponse.json(
-      { success: false, message: "Format email tidak valid" },
-      { status: 400 },
+      { success: false, message: "Email tidak valid" },
+      { status: 400 }
     );
   }
 
   if (!existingUser && !password) {
     return NextResponse.json(
-      { success: false, message: "Password wajib diisi untuk user baru" },
-      { status: 400 },
+      { success: false, message: "Password wajib untuk user baru" },
+      { status: 400 }
     );
   }
 
   let passwordHash: string | undefined;
 
   if (password) {
-    const passwordValidation = validatePasswordStrength(password);
+    const validation = validatePasswordStrength(password);
 
-    if (!passwordValidation.isValid) {
+    if (!validation.isValid) {
       return NextResponse.json(
-        { success: false, message: passwordValidation.errors[0] },
-        { status: 400 },
+        { success: false, message: validation.errors[0] },
+        { status: 400 }
       );
     }
 
@@ -143,8 +143,8 @@ export async function POST(request: NextRequest) {
 
   if (!savedUser) {
     return NextResponse.json(
-      { success: false, message: "User gagal disimpan" },
-      { status: 500 },
+      { success: false, message: "Gagal menyimpan user" },
+      { status: 500 }
     );
   }
 
@@ -154,44 +154,46 @@ export async function POST(request: NextRequest) {
   });
 }
 
+/* ===================== UPDATE STATUS ===================== */
 export async function PATCH(request: NextRequest) {
   const admin = await requireAdmin(request);
 
   if (!admin) {
     return NextResponse.json(
       { success: false, message: "Akses admin diperlukan" },
-      { status: 403 },
+      { status: 403 }
     );
   }
 
-  const body = (await request.json()) as {
-    id?: number;
-    status?: StoredUser["status"];
-  };
+  const body = await request.json();
 
-  if (!body.id || (body.status !== "aktif" && body.status !== "nonaktif")) {
+  const id = body.id;
+  const status = body.status;
+
+  if (!id || (status !== "aktif" && status !== "nonaktif")) {
     return NextResponse.json(
-      { success: false, message: "Data status user tidak valid" },
-      { status: 400 },
+      { success: false, message: "Data tidak valid" },
+      { status: 400 }
     );
   }
 
-  if (body.id === admin.id && body.status === "nonaktif") {
+  // 🔥 FIX: id sekarang string
+  if (id === admin.id && status === "nonaktif") {
     return NextResponse.json(
-      { success: false, message: "Admin yang sedang login tidak bisa dinonaktifkan" },
-      { status: 400 },
+      { success: false, message: "Tidak bisa nonaktifkan diri sendiri" },
+      { status: 400 }
     );
   }
 
   const updatedUser = await updateUserStatus({
-    id: body.id,
-    status: body.status,
+    id,
+    status,
   });
 
   if (!updatedUser) {
     return NextResponse.json(
       { success: false, message: "User tidak ditemukan" },
-      { status: 404 },
+      { status: 404 }
     );
   }
 

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import type { UserRole } from "@/lib/auth";
@@ -111,6 +112,11 @@ export async function updateUserStatus(input: {
 }) {
   await connectDB();
 
+  // 🔥 FIX: validasi ObjectId (biar tidak crash)
+  if (!mongoose.Types.ObjectId.isValid(input.id)) {
+    return null;
+  }
+
   const user = await User.findById(input.id);
 
   if (!user) return null;
@@ -125,4 +131,20 @@ export async function updateUserStatus(input: {
     role: user.role,
     status: user.status,
   };
+}
+
+/* ===================== GET ALL USERS ===================== */
+export async function getUsers() {
+  await connectDB();
+
+  const users = await User.find().sort({ createdAt: -1 });
+
+  return users.map((user) => ({
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    status: user.status,
+    createdAt: user.createdAt,
+  }));
 }
