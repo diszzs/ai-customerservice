@@ -2,12 +2,18 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
-let isConnected = false; // 🔥 cache koneksi
-
 export async function connectDB() {
-  if (isConnected) return;
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI belum diisi");
+  }
 
-  const db = await mongoose.connect(MONGODB_URI);
+  if (mongoose.connection.readyState >= 1) return;
 
-  isConnected = db.connections[0].readyState === 1;
+  try {
+    await mongoose.connect(MONGODB_URI);
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB error:", err);
+    throw err;
+  }
 }
