@@ -3,13 +3,13 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import type { UserRole } from "@/lib/auth";
 
-/* ===================== FIND USER ===================== */
+/* ================= FIND USER ================= */
 export async function findUserByEmail(email: string) {
   await connectDB();
 
-  const normalizedEmail = email.trim().toLowerCase();
-
-  const user = await User.findOne({ email: normalizedEmail });
+  const user = await User.findOne({
+    email: email.trim().toLowerCase(),
+  });
 
   if (!user) return null;
 
@@ -24,7 +24,7 @@ export async function findUserByEmail(email: string) {
   };
 }
 
-/* ===================== CREATE USER ===================== */
+/* ================= CREATE USER ================= */
 export async function createUser(input: {
   name: string;
   email: string;
@@ -35,7 +35,6 @@ export async function createUser(input: {
 
   const normalizedEmail = input.email.trim().toLowerCase();
 
-  // cek email sudah ada
   const existing = await User.findOne({ email: normalizedEmail });
   if (existing) return null;
 
@@ -55,7 +54,7 @@ export async function createUser(input: {
   };
 }
 
-/* ===================== UPSERT USER ===================== */
+/* ================= UPSERT USER ================= */
 export async function upsertUser(input: {
   name: string;
   email: string;
@@ -65,7 +64,6 @@ export async function upsertUser(input: {
   await connectDB();
 
   const normalizedEmail = input.email.trim().toLowerCase();
-
   const existing = await User.findOne({ email: normalizedEmail });
 
   if (existing) {
@@ -105,20 +103,16 @@ export async function upsertUser(input: {
   };
 }
 
-/* ===================== UPDATE STATUS ===================== */
+/* ================= UPDATE STATUS ================= */
 export async function updateUserStatus(input: {
   id: string;
   status: "aktif" | "nonaktif";
 }) {
   await connectDB();
 
-  // 🔥 FIX: validasi ObjectId (biar tidak crash)
-  if (!mongoose.Types.ObjectId.isValid(input.id)) {
-    return null;
-  }
+  if (!mongoose.Types.ObjectId.isValid(input.id)) return null;
 
   const user = await User.findById(input.id);
-
   if (!user) return null;
 
   user.status = input.status;
@@ -133,18 +127,18 @@ export async function updateUserStatus(input: {
   };
 }
 
-/* ===================== GET ALL USERS ===================== */
+/* ================= GET ALL ================= */
 export async function getUsers() {
   await connectDB();
 
   const users = await User.find().sort({ createdAt: -1 });
 
-  return users.map((user) => ({
-    id: user._id.toString(),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    status: user.status,
-    createdAt: user.createdAt,
+  return users.map((u) => ({
+    id: u._id.toString(),
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    status: u.status,
+    createdAt: u.createdAt,
   }));
 }

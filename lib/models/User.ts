@@ -1,14 +1,8 @@
-import mongoose, { Schema, models, model } from "mongoose";
+import { Schema, models, model } from "mongoose";
 
-/* ===================== USER SCHEMA ===================== */
 const UserSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
+    name: { type: String, required: true, trim: true },
     email: {
       type: String,
       required: true,
@@ -16,30 +10,20 @@ const UserSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-
-    passwordHash: {
-      type: String,
-      required: true,
-    },
-
+    passwordHash: { type: String, required: true },
     role: {
       type: String,
       enum: ["admin", "dosen", "mahasiswa"],
       default: "mahasiswa",
     },
-
     status: {
       type: String,
       enum: ["aktif", "nonaktif"],
       default: "aktif",
     },
   },
-  {
-    timestamps: true, // createdAt & updatedAt otomatis
-  }
+  { timestamps: true }
 );
 
-/* ===================== FIX HOT RELOAD ===================== */
 const User = models.User || model("User", UserSchema);
-
 export default User;

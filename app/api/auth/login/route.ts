@@ -13,75 +13,49 @@ export async function POST(request: NextRequest) {
       password?: string;
     };
 
-    // Validate input
     const validation = validateLoginInput(email ?? "", password ?? "");
     if (!validation.isValid) {
       return NextResponse.json(
-        {
-          success: false,
-          errors: validation.errors,
-          message: "Validasi input gagal",
-        },
-        { status: 400 },
+        { success: false, errors: validation.errors },
+        { status: 400 }
       );
     }
 
-    const user = await findUserByEmail(email ?? "");
-
+    const user = await findUserByEmail(email!);
     if (!user) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Email atau password salah",
-        },
-        { status: 401 },
+        { success: false, message: "Email atau password salah" },
+        { status: 401 }
       );
     }
 
     if (user.status !== "aktif") {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Akun Anda sedang nonaktif",
-        },
-        { status: 403 },
+        { success: false, message: "Akun nonaktif" },
+        { status: 403 }
       );
     }
 
-    // Verify password
-    const isPasswordValid = await verifyPassword(
-      password ?? "",
-      user.passwordHash,
-    );
-
-    if (!isPasswordValid) {
+    const valid = await verifyPassword(password!, user.passwordHash);
+    if (!valid) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Email atau password salah",
-        },
-        { status: 401 },
+        { success: false, message: "Email atau password salah" },
+        { status: 401 }
       );
     }
 
     const session = await createSession(user);
 
-    // Return user data (without password hash)
-    const response = NextResponse.json(
-      {
-        success: true,
-        data: {
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
+    const res = NextResponse.json({
+      success: true,
+      data: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
-      { status: 200 },
-    );
+    });
 
-    response.cookies.set({
-      name: SESSION_COOKIE_NAME,
-      value: session.token,
+    res.cookies.set(SESSION_COOKIE_NAME, session.token, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
@@ -89,15 +63,12 @@ export async function POST(request: NextRequest) {
       expires: new Date(session.expiresAt),
     });
 
-    return response;
-  } catch (error) {
-    console.error("Login error:", error);
+    return res;
+  } catch (err) {
+    console.error("Login error:", err);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Terjadi kesalahan server",
-      },
-      { status: 500 },
+      { success: false, message: "Server error" },
+      { status: 500 }
     );
   }
 }

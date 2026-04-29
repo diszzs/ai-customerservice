@@ -1,9 +1,9 @@
 import { connectDB } from "@/lib/mongodb";
-import Session from "./models/Session";
+import Session from "@/lib/models/Session"; // <-- pakai alias biar konsisten
 import { randomUUID } from "node:crypto";
 import { SESSION_DURATION_MS, type StoredUser } from "@/lib/auth";
 
-/* ===================== CREATE SESSION ===================== */
+/* CREATE */
 export async function createSession(user: StoredUser) {
   await connectDB();
 
@@ -24,15 +24,13 @@ export async function createSession(user: StoredUser) {
   };
 }
 
-/* ===================== GET SESSION ===================== */
+/* GET */
 export async function getSessionByToken(token: string) {
   await connectDB();
 
   const session = await Session.findOne({ token });
-
   if (!session) return null;
 
-  // cek expired
   if (new Date(session.expiresAt).getTime() <= Date.now()) {
     await Session.deleteOne({ token });
     return null;
@@ -47,9 +45,8 @@ export async function getSessionByToken(token: string) {
   };
 }
 
-/* ===================== DELETE SESSION ===================== */
+/* DELETE */
 export async function deleteSession(token: string) {
   await connectDB();
-
   await Session.deleteOne({ token });
 }
