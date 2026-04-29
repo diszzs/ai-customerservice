@@ -1,0 +1,58 @@
+[
+  {
+    "token": "afd366ab-1493-4c3c-89ec-5b6686a2523a",
+    "email": "mahasiswa@elearning.local",
+    "role": "mahasiswa",
+    "name": "Mahasiswa Demo",
+    "expiresAt": "2026-05-01T06:59:03.728Z"
+  },
+  {
+    "token": "2dbcb28e-a9cc-4dfb-b2be-4d82f45f6e47",
+    "email": "dosen@elearning.local",
+    "role": "dosen",
+    "name": "Dosen Pengampu",
+    "expiresAt": "2026-05-01T07:01:25.702Z"
+  },
+  {
+    "token": "6b5fc43f-8e40-49d0-8b94-efbfafd72a6d",
+    "email": "dosen@elearning.local",
+    "role": "dosen",
+    "name": "Dosen Pengampu",
+    "expiresAt": "2026-05-01T08:31:05.363Z"
+  },
+  {
+    "token": "9a5cb029-a4a7-4c62-be33-36f5fe90ecde",
+    "email": "dosen@elearning.local",
+    "role": "dosen",
+    "name": "Dosen Pengampu",
+    "expiresAt": "2026-05-03T15:00:00.586Z"
+  },
+  {
+    "token": "784c84f6-fda8-415b-b17d-a3da623b6351",
+    "email": "dosen@elearning.local",
+    "role": "dosen",
+    "name": "Dosen Pengampu",
+    "expiresAt": "2026-05-06T04:25:26.267Z"
+  },
+  {
+    "token": "29b01578-3b1d-449e-9a97-a61ccdf87522",
+    "email": "admin@elearning.local",
+    "role": "admin",
+    "name": "Administrator Sistem",
+    "expiresAt": "2026-05-06T04:26:29.029Z"
+  },
+  {
+    "token": "73b89563-cbb9-4392-82ef-bd62c57d62f8",
+    "email": "admin@elearning.local",
+    "role": "admin",
+    "name": "Administrator Sistem",
+    "expiresAt": "2026-05-06T04:29:48.371Z"
+  },
+  {
+    "token": "43bad1b9-ec5c-45a4-b951-73d53768e692",
+    "email": "dosen@elearning.local",
+    "role": "dosen",
+    "name": "Dosen Pengampu",
+    "expiresAt": "2026-05-06T04:30:16.638Z"
+  }
+]

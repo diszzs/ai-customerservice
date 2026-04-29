@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Administrator Sistem",
+    "email": "admin@elearning.local",
+    "passwordHash": "$2b$10$7m8CdBvSOSbICt0Nt2YSRedJS1S65PLiQboE/ZokM4yokXJCOyjmC",
+    "role": "admin",
+    "status": "aktif",
+    "createdAt": "2026-04-15T04:08:20.224Z"
+  },
+  {
+    "id": 2,
+    "name": "Dosen Pengampu",
+    "email": "dosen@elearning.local",
+    "passwordHash": "$2b$10$cYil44.MCTo67y89rMlmLezIHlncuQjGDPKUuT3zM2QMC13wVApk2",
+    "role": "dosen",
+    "status": "aktif",
+    "createdAt": "2026-04-15T04:08:20.224Z"
+  },
+  {
+    "id": 3,
+    "name": "Mahasiswa Demo",
+    "email": "mahasiswa@elearning.local",
+    "passwordHash": "$2b$10$TvpwKDq2P8LpuxqaLQn9y.DAQnV1gyzR3LMJTzfSZC/cSPp1ZUT8u",
+    "role": "mahasiswa",
+    "status": "aktif",
+    "createdAt": "2026-04-15T04:08:20.224Z"
+  },
+  {
+    "id": 1776248934450,
+    "name": "dizss",
+    "email": "valdis398@gmail.com",
+    "passwordHash": "$2b$10$adSMTLrp1QhxFoRW1.VF.ub6VDuifEWk4l2.UREBSbsTVBzuuOGs2",
+    "role": "mahasiswa",
+    "status": "aktif",
+    "createdAt": "2026-04-15T10:28:54.450Z"
+  }
+]
