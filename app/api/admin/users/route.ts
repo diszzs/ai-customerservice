@@ -16,7 +16,7 @@ import {
 
 /* ===================== TYPES ===================== */
 type UserDto = {
-  id: string; // 🔥 FIX: dari number → string
+  id: string;
   name: string;
   email: string;
   role: UserRole;
@@ -33,8 +33,8 @@ function toUserDto(user: UserDtoSource): UserDto {
     id: user.id,
     name: user.name,
     email: user.email,
-    role: user.role,
-    status: user.status,
+    role: user.role as UserRole,
+    status: user.status as StoredUser["status"],
     createdAt: new Date(user.createdAt).toISOString(),
   };
 }
@@ -98,7 +98,6 @@ export async function POST(request: NextRequest) {
 
   const existingUser = await findUserByEmail(email);
 
-  /* VALIDASI */
   if (!isValidName(name)) {
     return NextResponse.json(
       { success: false, message: "Nama tidak valid" },
@@ -178,7 +177,6 @@ export async function PATCH(request: NextRequest) {
     );
   }
 
-  // 🔥 FIX: id sekarang string
   if (id === admin.id && status === "nonaktif") {
     return NextResponse.json(
       { success: false, message: "Tidak bisa nonaktifkan diri sendiri" },
