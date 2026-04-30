@@ -1,4 +1,4 @@
-// v2
+// v3
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/lib/models/User";
@@ -36,7 +36,7 @@ export async function createUser(input: {
 
   const normalizedEmail = input.email.trim().toLowerCase();
 
-  const existing = await User.findOne({ email: normalizedEmail });
+  const existing = await User.findOne({ email: normalizedEmail }).lean();
   if (existing) return null;
 
   const user = await User.create({
@@ -48,7 +48,7 @@ export async function createUser(input: {
   });
 
   return {
-    id: user._id.toString(),
+    id: (user._id as any).toString(),
     name: user.name,
     email: user.email,
     role: user.role,
@@ -76,15 +76,15 @@ export async function upsertUser(input: {
       existing.passwordHash = input.passwordHash;
     }
 
-    await existing.save();
+    const saved = await existing.save();
 
     return {
-      id: existing._id.toString(),
-      name: existing.name,
-      email: existing.email,
-      role: existing.role,
-      status: existing.status,
-      createdAt: existing.createdAt,
+      id: (saved._id as any).toString(),
+      name: saved.name,
+      email: saved.email,
+      role: saved.role,
+      status: saved.status,
+      createdAt: saved.createdAt,
     };
   }
 
@@ -99,7 +99,7 @@ export async function upsertUser(input: {
   });
 
   return {
-    id: user._id.toString(),
+    id: (user._id as any).toString(),
     name: user.name,
     email: user.email,
     role: user.role,
@@ -121,15 +121,15 @@ export async function updateUserStatus(input: {
   if (!user) return null;
 
   user.status = input.status;
-  await user.save();
+  const saved = await user.save();
 
   return {
-    id: user._id.toString(),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    status: user.status,
-    createdAt: user.createdAt,
+    id: (saved._id as any).toString(),
+    name: saved.name,
+    email: saved.email,
+    role: saved.role,
+    status: saved.status,
+    createdAt: saved.createdAt,
   };
 }
 
@@ -137,14 +137,14 @@ export async function updateUserStatus(input: {
 export async function getUsers() {
   await connectDB();
 
-  const users = await User.find().sort({ createdAt: -1 });
+  const users = await User.find().sort({ createdAt: -1 }).lean();
 
   return users.map((u) => ({
-    id: u._id.toString(),
-    name: u.name,
-    email: u.email,
-    role: u.role,
-    status: u.status,
+    id: (u._id as any).toString(),
+    name: u.name as string,
+    email: u.email as string,
+    role: u.role as string,
+    status: u.status as string,
     createdAt: u.createdAt,
   }));
 }
