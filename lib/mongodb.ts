@@ -12,11 +12,13 @@ type MongooseCache = {
 };
 
 // cache global biar tidak reconnect terus di serverless
-let cached: MongooseCache = (global as any)._mongoose;
+const globalForMongoose = globalThis as typeof globalThis & {
+  _mongoose?: MongooseCache;
+};
 
-if (!cached) {
-  cached = (global as any)._mongoose = { conn: null, promise: null };
-}
+const cached: MongooseCache =
+  globalForMongoose._mongoose ??
+  (globalForMongoose._mongoose = { conn: null, promise: null });
 
 export async function connectDB() {
   if (cached.conn) return cached.conn;

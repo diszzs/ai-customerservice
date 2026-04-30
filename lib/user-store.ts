@@ -82,6 +82,8 @@ export async function upsertUser(input: {
       name: existing.name,
       email: existing.email,
       role: existing.role,
+      status: existing.status,
+      createdAt: existing.createdAt,
     };
   }
 
@@ -100,6 +102,8 @@ export async function upsertUser(input: {
     name: user.name,
     email: user.email,
     role: user.role,
+    status: user.status,
+    createdAt: user.createdAt,
   };
 }
 
@@ -124,6 +128,7 @@ export async function updateUserStatus(input: {
     email: user.email,
     role: user.role,
     status: user.status,
+    createdAt: user.createdAt,
   };
 }
 

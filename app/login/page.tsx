@@ -16,7 +16,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const getDashboardPathByRole = (role: string) => {
-    if (role === "admin") return "/dashboard/admin";
+    if (role === "admin") return "/dashboard?panel=admin";
     if (role === "dosen") return "/dashboard?panel=materi";
     return "/dashboard?panel=ringkasan";
   };

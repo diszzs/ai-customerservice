@@ -25,16 +25,17 @@ type UserDto = {
 };
 
 const userRoles: UserRole[] = ["admin", "dosen", "mahasiswa"];
+type UserDtoSource = Awaited<ReturnType<typeof getUsers>>[number];
 
 /* ===================== MAPPER ===================== */
-function toUserDto(user: any): UserDto {
+function toUserDto(user: UserDtoSource): UserDto {
   return {
     id: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
     status: user.status,
-    createdAt: user.createdAt,
+    createdAt: new Date(user.createdAt).toISOString(),
   };
 }
 
