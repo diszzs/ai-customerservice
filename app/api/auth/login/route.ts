@@ -21,7 +21,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("Finding user:", email);
     const user = await findUserByEmail(email!);
+    console.log("User found:", user ? "yes" : "no", "passwordHash:", user?.passwordHash ? "exists" : "missing");
+    
     if (!user) {
       return NextResponse.json(
         { success: false, message: "Email atau password salah" },
@@ -36,7 +39,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("Verifying password...");
     const valid = await verifyPassword(password!, user.passwordHash);
+    console.log("Password valid:", valid);
+    
     if (!valid) {
       return NextResponse.json(
         { success: false, message: "Email atau password salah" },
@@ -44,6 +50,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("Creating session...");
     const session = await createSession(user);
 
     const res = NextResponse.json({
