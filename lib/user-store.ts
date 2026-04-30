@@ -1,3 +1,4 @@
+// v2
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/lib/models/User";
