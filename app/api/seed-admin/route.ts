@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/crypto";
-import { createUser } from "@/lib/user-store";
+import { upsertUser } from "@/lib/user-store";
 
 export async function GET() {
   const passwordHash = await hashPassword("Admin123");
 
-  const user = await createUser({
+  const user = await upsertUser({
     name: "Administrator",
     email: "admin@elearning.local",
     passwordHash,
