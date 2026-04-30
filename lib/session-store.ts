@@ -1,3 +1,4 @@
+// v2
 import crypto from "crypto";
 import { connectDB } from "@/lib/mongodb";
 import Session from "@/lib/models/Session";
@@ -8,10 +9,9 @@ export type SessionData = {
   email: string;
   role: string;
   name: string;
-  expiresAt: string; // ISO string
+  expiresAt: string;
 };
 
-/* ================= CREATE SESSION ================= */
 export async function createSession(user: {
   email: string;
   role: string;
@@ -39,7 +39,6 @@ export async function createSession(user: {
   };
 }
 
-/* ================= GET SESSION BY TOKEN ================= */
 export async function getSessionByToken(
   token: string
 ): Promise<SessionData | null> {
@@ -47,7 +46,7 @@ export async function getSessionByToken(
 
   const session = await Session.findOne({
     token,
-    expiresAt: { $gt: new Date() }, // belum expired
+    expiresAt: { $gt: new Date() },
   });
 
   if (!session) return null;
@@ -61,13 +60,11 @@ export async function getSessionByToken(
   };
 }
 
-/* ================= DELETE SESSION ================= */
 export async function deleteSession(token: string): Promise<void> {
   await connectDB();
   await Session.deleteOne({ token });
 }
 
-/* ================= DELETE ALL SESSIONS BY EMAIL ================= */
 export async function deleteAllSessionsByEmail(email: string): Promise<void> {
   await connectDB();
   await Session.deleteMany({ email });
