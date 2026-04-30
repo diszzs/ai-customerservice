@@ -10,17 +10,17 @@ export async function findUserByEmail(email: string) {
 
   const user = await User.findOne({
     email: email.trim().toLowerCase(),
-  });
+  }).lean();
 
   if (!user) return null;
 
   return {
-    id: user._id.toString(),
-    name: user.name,
-    email: user.email,
-    passwordHash: user.passwordHash,
-    role: user.role,
-    status: user.status,
+    id: (user._id as any).toString(),
+    name: user.name as string,
+    email: user.email as string,
+    passwordHash: user.passwordHash as string,
+    role: user.role as string,
+    status: user.status as string,
     createdAt: user.createdAt,
   };
 }
