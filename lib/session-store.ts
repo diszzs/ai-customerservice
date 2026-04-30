@@ -22,13 +22,15 @@ export async function createSession(user: {
   const token = crypto.randomBytes(48).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
-  await Session.create({
+  console.log("Creating session for:", user.email);
+  const doc = await Session.create({
     token,
     email: user.email,
     role: user.role,
     name: user.name,
     expiresAt,
   });
+  console.log("Session doc created:", doc._id?.toString());
 
   return {
     token,
